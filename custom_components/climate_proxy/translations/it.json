@@ -1,0 +1,45 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Scegli un condizionatore",
+        "description": "Il proxy rispecchia l'unità scelta ed espone Dry sulla posizione Automatico, così la deumidificazione diventa raggiungibile dalla tile del termostato in Casa.",
+        "data": {
+          "source_entity": "Entità climate",
+          "name": "Nome",
+          "auto_preset": "Preset a ogni accensione e cambio modalità"
+        },
+        "data_description": {
+          "source_entity": "L'unità reale. Temperatura, velocità ventola, swing e preset vengono rispecchiati da lei.",
+          "name": "Nome dell'entità proxy. Scegline uno diverso da quello della sorgente, che mantiene il suo.",
+          "auto_preset": "Nome esatto di un preset supportato dalla sorgente, ad esempio eco. Applicato dopo ogni accensione e cambio modalità, anche in Heat e Cool. Lascia vuoto per non applicare preset."
+        }
+      }
+    },
+    "error": {
+      "unknown_preset": "L'unità scelta non offre questo preset."
+    },
+    "abort": {
+      "already_configured": "Questa entità climate ha già un Climate Proxy."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opzioni Climate Proxy",
+        "description": "Proxy di {source}.",
+        "data": {
+          "name": "Nome",
+          "auto_preset": "Preset a ogni accensione e cambio modalità"
+        },
+        "data_description": {
+          "name": "Nome dell'entità proxy.",
+          "auto_preset": "Nome esatto di un preset supportato dalla sorgente, ad esempio eco. Applicato dopo ogni accensione e cambio modalità, anche in Heat e Cool. Lascia vuoto per non applicare preset."
+        }
+      }
+    },
+    "error": {
+      "unknown_preset": "L'unità scelta non offre questo preset."
+    }
+  }
+}

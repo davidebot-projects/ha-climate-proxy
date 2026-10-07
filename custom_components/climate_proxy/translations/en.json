@@ -1,0 +1,45 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Wrap a climate entity",
+        "description": "The proxy mirrors the chosen unit and exposes Dry on the Auto slot, so dehumidification becomes reachable from the thermostat tile in Apple Home.",
+        "data": {
+          "source_entity": "Climate entity",
+          "name": "Name",
+          "auto_preset": "Preset on every power-on and mode change"
+        },
+        "data_description": {
+          "source_entity": "The real unit. Temperature, fan speed, swing and presets are mirrored from it.",
+          "name": "Name of the proxy entity. Pick something distinct from the source, which keeps its own.",
+          "auto_preset": "Exact name of a preset supported by the source, such as eco. Applied after every power-on and mode change, including Heat and Cool. Leave empty to skip presets."
+        }
+      }
+    },
+    "error": {
+      "unknown_preset": "The chosen unit does not offer this preset."
+    },
+    "abort": {
+      "already_configured": "This climate entity already has a Climate Proxy."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Climate Proxy options",
+        "description": "Proxy of {source}.",
+        "data": {
+          "name": "Name",
+          "auto_preset": "Preset on every power-on and mode change"
+        },
+        "data_description": {
+          "name": "Name of the proxy entity.",
+          "auto_preset": "Exact name of a preset supported by the source, such as eco. Applied after every power-on and mode change, including Heat and Cool. Leave empty to skip presets."
+        }
+      }
+    },
+    "error": {
+      "unknown_preset": "The chosen unit does not offer this preset."
+    }
+  }
+}
