@@ -37,6 +37,7 @@ control to Dry if the unit does not support it.
 ## Requirements
 
 - Home Assistant **2025.3.0** or newer.
+- Home Assistant **2026.3** or newer to display the bundled integration icon.
 - An existing `climate` entity for each air conditioner.
 - Source modes **Off, Heat, Cool and Dry**. The proxy assumes these modes are
   available; it does not probe for them.

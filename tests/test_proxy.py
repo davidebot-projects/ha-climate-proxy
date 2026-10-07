@@ -1,10 +1,12 @@
 """Behavior tests with simulated HA state/services; no running HA required."""
 import ast
 import asyncio
+import sys
 from enum import IntFlag, Enum
 from pathlib import Path
-from types import SimpleNamespace
+from types import ModuleType, SimpleNamespace
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1] / 'custom_components/climate_proxy'
 
@@ -31,8 +33,8 @@ class Features(IntFlag):
     FAN_MODE = 8
     PRESET_MODE = 16
     SWING_MODE = 32
-    TURN_ON = 128
-    TURN_OFF = 256
+    TURN_ON = 256
+    TURN_OFF = 128
 
 
 class Entity:
@@ -234,6 +236,52 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(updates[0]['options']['source_entity'], 'climate.new')
         self.assertEqual(updates[0]['unique_id'], 'climate.new')
         self.assertEqual(self.proxy._attr_unique_id, 'entry_climate')
+
+
+class ImportTests(unittest.TestCase):
+    def test_platform_import_with_strict_core_constants(self):
+        """Import the whole platform; don't invent missing core constants."""
+        env = environment()
+        modules = {}
+
+        def module(name):
+            if name not in modules:
+                item = ModuleType(name)
+                item.__path__ = []
+                modules[name] = item
+                if '.' in name:
+                    parent, child = name.rsplit('.', 1)
+                    setattr(module(parent), child, item)
+            return modules[name]
+
+        # Core constant exports used by this platform. In particular,
+        # ATTR_TEMPERATURE_UNIT is not exported by homeassistant.const.
+        core_constants = module('homeassistant.const')
+        for name in (
+            'ATTR_ENTITY_ID', 'ATTR_SUPPORTED_FEATURES', 'ATTR_TEMPERATURE',
+            'CONF_NAME', 'SERVICE_TURN_OFF', 'SERVICE_TURN_ON',
+            'STATE_UNAVAILABLE', 'STATE_UNKNOWN', 'UnitOfTemperature',
+        ):
+            setattr(core_constants, name, env[name])
+
+        source = (ROOT / 'climate.py').read_text()
+        for node in ast.parse(source).body:
+            if not isinstance(node, ast.ImportFrom):
+                continue
+            if node.module.startswith('homeassistant') and node.module != 'homeassistant.const':
+                imported = module(node.module)
+                for alias in node.names:
+                    setattr(imported, alias.name,
+                            env.get(alias.asname or alias.name, object))
+        package = module('_climate_proxy_import_test')
+        local_constants = module(package.__name__ + '.const')
+        exec(compile((ROOT / 'const.py').read_text(), 'const.py', 'exec'),
+             local_constants.__dict__)
+        platform = module(package.__name__ + '.climate')
+        platform.__package__ = package.__name__
+        with patch.dict(sys.modules, modules):
+            exec(compile(source, 'climate.py', 'exec'), platform.__dict__)
+        self.assertTrue(hasattr(platform, 'ClimateProxyEntity'))
 
 
 if __name__ == '__main__':

@@ -43,7 +43,6 @@ from homeassistant.const import (
     ATTR_ENTITY_ID,
     ATTR_SUPPORTED_FEATURES,
     ATTR_TEMPERATURE,
-    ATTR_TEMPERATURE_UNIT,
     CONF_NAME,
     SERVICE_TURN_OFF,
     SERVICE_TURN_ON,
@@ -218,7 +217,7 @@ class ClimateProxyEntity(ClimateEntity):
     def temperature_unit(self) -> str:
         """Return the unit of the source, defaulting to the system one."""
         return self._attribute(
-            ATTR_TEMPERATURE_UNIT,
+            "temperature_unit",
             self.hass.config.units.temperature_unit or UnitOfTemperature.CELSIUS,
         )
 

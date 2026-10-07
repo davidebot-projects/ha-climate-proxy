@@ -7,5 +7,5 @@
   "integration_type": "helper",
   "iot_class": "calculated",
   "issue_tracker": "https://github.com/davidebot-projects/ha-climate-proxy/issues",
-  "version": "1.0.0"
+  "version": "1.0.1"
 }
